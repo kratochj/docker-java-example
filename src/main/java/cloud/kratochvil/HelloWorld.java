@@ -1,3 +1,5 @@
+package cloud.kratochvil;
+
 public class HelloWorld {
 
     String text;
