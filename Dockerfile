@@ -1,14 +1,11 @@
-FROM openjdk:17-jdk-slim-bullseye AS build-env
+FROM maven:3.9.4-amazoncorretto-20 AS build-env
 
 WORKDIR /app
 COPY . .
 
-RUN javac src/java/*.java
-WORKDIR /app/src/java
-RUN jar cfe main.jar HelloWorld *.class
+RUN mvn clean package
 
 # Final image
-FROM gcr.io/distroless/java17-debian12
-COPY --from=build-env /app/src/java /app
-WORKDIR /app
-CMD ["main.jar"]
+FROM amazoncorretto:21
+COPY --from=build-env /app/target/java-1.0-SNAPSHOT.jar /java-app.jar
+ENTRYPOINT ["java","-jar","/java-app.jar"]
